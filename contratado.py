@@ -1,26 +1,35 @@
 vagas = {'Analista de Dados': ['python', 'power bi', 'sql', 'boa comunicação'],
          'Cientista de Dados': ['python', 'banco de dados', 'machine learning']}
+
 inscritos = dict()
 
-
-# nome_arquivo = input('Insira o nome do arquivo que contém o currículo do candidato (insira o path se necessário): ')
-# nome_candidato = input('Qual o nome do candidato? ')
-# cv = open(nome_arquivo, 'r')
 numCandidatos = int(input('Quantos candidatos serão inscritos? '))
 
 
 def listarInscritos(inscritos):
     cont = 0
     while cont < numCandidatos:
+        novaInscricao = dict()
         nome_arquivo = input(
             'Insira o nome do arquivo que contém o currículo do candidato (insira o path se necessário): ')
         nome_candidato = input('Qual o nome do candidato? ')
-        novaInscricao = {nome_candidato: nome_arquivo}
-        inscritos.update(novaInscricao)
+        vaga_candidato = input(
+                '''Para qual vaga este candidato está se aplicando?
+                Oportunidades em aberto no momento:
+                1 - Analista de Dados
+                2 - Cientista de Dados
+                Digite a opção desejada: ''')
+        if vaga_candidato == 1:
+            vagaPretendida = 'Analista de Dados'
+            novaInscricao = {nome_candidato: [nome_arquivo, vagaPretendida]}
+            inscritos.update(novaInscricao)
+        else:
+            vagaPretendida = 'Cientista de Dados'
+            novaInscricao = {nome_candidato: [nome_arquivo, vagaPretendida]}
+            inscritos.update(novaInscricao)        
         cont = cont + 1
-    
-    return inscritos
 
+    return inscritos
 
 def avaliarCurriculo(cv, vagas):
     termoSeEncaixa = []
@@ -39,16 +48,23 @@ def avaliarCurriculo(cv, vagas):
 
 
 def aprovaCandidatos(inscritos):
+    print(f'Foram {numCandidatos} inscritos.')
     for candidato in inscritos:
-        cv = open(inscritos[candidato])
+        cv = open(inscritos[candidato][0])
+        vagaPretendida = str(inscritos[candidato][1])
         aptoPara = avaliarCurriculo(cv, vagas)
+
         if len(aptoPara) == 0:
             return(f'O candidato {candidato} não está apto para nenhuma vaga')
         else:
             for i in aptoPara:
-                print(f'O candidato {candidato} está apto para a vaga de {i}')
+                if str(i).lower() == vagaPretendida.lower():
+                    print(
+                        f'O candidato {candidato} está apto para a vaga de {i} que se inscreveu.')
+                elif str(i).lower() != vagaPretendida.lower():
+                    print(
+                        f'O candidato {candidato} também está apto à vaga de {i}.')
 
 
-#
 listarInscritos(inscritos)
 aprovaCandidatos(inscritos)
